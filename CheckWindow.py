@@ -28,7 +28,7 @@ class CheckWindow(QWidget):
         self.QGBox1.setMaximumWidth(450)
         self.QGBox1.setMinimumWidth(450)
         self.lineedit1 = QLineEdit(self)
-        self.lineedit1.setText(self.cmsenv.getCMSSWBASECMSSWVERSION()) # default
+        self.lineedit1.setText("CMSSW_8_0_11") # default
         self.lineedit1.setMinimumWidth(150)
         self.label1 = QLabel("release", self)
         self.label1.setMaximumWidth(80)
@@ -57,11 +57,9 @@ class CheckWindow(QWidget):
         self.QGBox2 = QGroupBox("Results")
         self.QGBox21 = QGroupBox("eos ls")
         self.QGBox22 = QGroupBox("https")
-        self.QGBox21.setMaximumHeight(200)
         self.QGBox21.setMinimumHeight(200)
         self.QGBox21.setMaximumWidth(450)
         self.QGBox21.setMinimumWidth(450)
-        self.QGBox22.setMaximumHeight(200)
         self.QGBox22.setMinimumHeight(200)
         self.QGBox22.setMaximumWidth(450)
         self.QGBox22.setMinimumWidth(450)
@@ -111,8 +109,9 @@ class CheckWindow(QWidget):
         
         # creation des onglets
         self.onglets = QTabWidget()
+        self.onglets.setMinimumHeight(150)
+        self.onglets.setMaximumHeight(200)
         self.generalTab = QWidget()
-        self.generalTab.setMinimumHeight(170)
         self.onglets.insertTab(0, self.generalTab, "General")
             #Set Layout for Tabs Pages
         self.generalTab.setLayout(self.layoutV_combobox)   
@@ -128,7 +127,56 @@ class CheckWindow(QWidget):
         print "fin"
 
     def Check_1(self):
-        print "Check button clicked !"
-        print "Computation for " + self.lineedit1.text()
-#        QtCore.QCoreApplication.processEvents()
+        import subprocess
+        self.cmsenv = env()
+        
+#        print "Check button clicked !"
+        if ( self.lineedit1.text() == '' ):
+            BoiteMessage = QMessageBox()
+            BoiteMessage.setText("There is no Release to check.")
+            BoiteMessage.setWindowTitle("WARNING !")
+            BoiteMessage.exec_()
+        else:
+            print "Computation for " + self.lineedit1.text()
+            cmssw_version = self.lineedit1.text()
+            print "CMSSW VERSION : ", cmssw_version
+            cmd_eos = self.cmsenv.eosText() + cmssw_version
+            #print "cmde eos : ", cmd_eos
+            proc = subprocess.Popen([cmd_eos], stdout=subprocess.PIPE, shell=True) # séparer la commande des arguments
+            (out, err) = proc.communicate()
+            print "test out"
+            if out != '':
+                print "datasets : ", self.cmsenv.liste_datasets()
+                print "datasets miniAOD : ", self.cmsenv.liste_datasets_miniAOD()
+                print "datasets fast : ", self.cmsenv.liste_datasets_fast()
+                print "liste type : ", self.cmsenv.liste_type()
+                print "liste tableaux : ", self.cmsenv.liste_tab()
+                i = 0
+                txt = ''
+                self.texte_eosls.clear()
+                for it_1 in self.cmsenv.liste_type():
+                    print "type : %s" % it_1
+                    txt += 'type : ' + it_1 + '\n'
+                    #self.texte_eosls.setText(self.trUtf8(txt))
+                    #print "tableau : %s" % self.cmsenv.liste_tab()[i]
+                    #print self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]
+                    for it_2 in self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]:
+                        print "dataset : %s" % it_2
+                        cmd_2 = cmd_eos + '/' + it_2 + '/' + it_1
+                        proc2 = subprocess.Popen([cmd_2], stdout=subprocess.PIPE, shell=True) # séparer la commande des arguments
+                        (out2, err2) = proc2.communicate()
+                        if ( len(out2) != 0 ):
+                            txt += it_2 + ' = ' + out2
+                        else:
+                            txt += it_2 + ' = no root files' + '\n'
+                    i += 1
+                    txt += '\n'
+                print "fin type %s" % it_1
+                self.texte_eosls.setText(self.trUtf8(txt))
+            else:
+                BoiteMessage = QMessageBox()
+                BoiteMessage.setText("There is a pbm with the Release.")
+                BoiteMessage.setWindowTitle("WARNING !")
+                BoiteMessage.exec_()
 
+# list_DataSets_FULL -> liste_datasets
