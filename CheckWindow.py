@@ -20,6 +20,7 @@ class CheckWindow(QWidget):
         self.texte = self.cmsenv.cmsAll()
         self.coll_list = []
         self.working_dir_base = os.getcwd()
+        print self.cmsenv.CMSSWBASECMSSWVERSION
 						
 		# creation of texEdit for the release to check
         self.QGBox1 = QGroupBox("release")
@@ -28,7 +29,7 @@ class CheckWindow(QWidget):
         self.QGBox1.setMaximumWidth(450)
         self.QGBox1.setMinimumWidth(450)
         self.lineedit1 = QLineEdit(self)
-        self.lineedit1.setText("CMSSW_8_0_11") # default
+        self.lineedit1.setText(self.cmsenv.CMSSWBASECMSSWVERSION) # default
         self.lineedit1.setMinimumWidth(150)
         self.label1 = QLabel("release", self)
         self.label1.setMaximumWidth(80)
@@ -151,15 +152,14 @@ class CheckWindow(QWidget):
                 print "datasets fast : ", self.cmsenv.liste_datasets_fast()
                 print "liste type : ", self.cmsenv.liste_type()
                 print "liste tableaux : ", self.cmsenv.liste_tab()
+
+                # part 1 eos
                 i = 0
                 txt = ''
                 self.texte_eosls.clear()
                 for it_1 in self.cmsenv.liste_type():
                     print "type : %s" % it_1
                     txt += 'type : ' + it_1 + '\n'
-                    #self.texte_eosls.setText(self.trUtf8(txt))
-                    #print "tableau : %s" % self.cmsenv.liste_tab()[i]
-                    #print self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]
                     for it_2 in self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]:
                         print "dataset : %s" % it_2
                         cmd_2 = cmd_eos + '/' + it_2 + '/' + it_1
@@ -173,6 +173,18 @@ class CheckWindow(QWidget):
                     txt += '\n'
                 print "fin type %s" % it_1
                 self.texte_eosls.setText(self.trUtf8(txt))
+                
+                # part 2 https
+                print "CMSSW VERSION : ", cmssw_version
+                self.coll_list = []
+                i = 0
+                for it_1 in self.cmsenv.liste_type():
+                    print "type : %s" % it_1
+                    for it_2 in self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]:
+                        self.coll_list.append(it_2)
+                    list_search(self)
+                    print "self.rel_list : ", self.rel_list
+                    i += 1
             else:
                 BoiteMessage = QMessageBox()
                 BoiteMessage.setText("There is a pbm with the Release.")

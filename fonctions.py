@@ -58,7 +58,6 @@ def cmd_fetch(option_is_from_data, option_release, option_regexp, option_mthread
     from optparse import OptionParser
     from urllib2 import build_opener, Request
     
-#    print "\n CMD_FETCH : "
     cmsenv = env()
    
     ## Define options
@@ -114,7 +113,6 @@ def cmd_fetch(option_is_from_data, option_release, option_regexp, option_mthread
         relvaldir = "RelValData"
     print "relvaldir : ", relvaldir
     release = re.findall('(CMSSW_\d*_\d*_)\d*(?:_[\w\d]*)?', option_release)
-#    print release
     if not release:
         parser.error('No such CMSSW release found. Please check the ``--release`` commandline option value.')
     releasedir = release[0] + "x"
@@ -123,22 +121,16 @@ def cmd_fetch(option_is_from_data, option_release, option_regexp, option_mthread
 #    base_url = 'https://cmsweb.cern.ch/dqm/relval-test/data/browse/ROOT/'
     filedir_url = base_url + relvaldir + '/' + releasedir + '/'
 #    filedir_url = 'http://cms-project-relval.web.cern.ch/cms-project-relval/relval_stats/'
-    print "AAAAAAA : ", filedir_url
     filedir_html = auth_wget(filedir_url)
-
-    #auth_wget("https://cmsweb.cern.ch/dqm/offline/data/browse/ROOT/OfflineData/Run2012/JetHT/0002029xx/DQM_V0001_R000202950__JetHT__Run2012C-PromptReco-v2__DQM.root")
-    #auth_wget("https://cmsweb.cern.ch/dqm/relval/data/browse/ROOT/RelValData/CMSSW_5_3_x/DQM_V0001_R000205921__JetHT__CMSSW_5_3_3_patch1-PR_newconditions_RelVal_R205921_121105-v2__DQM.root")
 
     file_list_re = re.compile(r"<a href='[-./\w]*'>([-./\w]*)<")
     all_files = file_list_re.findall(filedir_html)[1:]  # list of file names
-#    print "cmd_fetch : ", all_files
 
     ### Fetch the files, using multi-processing
     print "cmd_fetch : ", option_regexp.split(',') + [option_release]
     file_res = [re.compile(r) for r in option_regexp.split(',') + [option_release]]
 
     selected_files = [f for f in all_files if all([r.search(f) for r in file_res])]
-#    print selected_files
 
     print 'Downloading files:'
     for i, name in enumerate(selected_files):
@@ -155,16 +147,12 @@ def cmd_fetch(option_is_from_data, option_release, option_regexp, option_mthread
     return 
 
 def list_search(self):
-    texte_release1 = self.lineedit1.text()
-    texte_release3 = self.lineedit3.text()
-        
     # on fera la fonction par un appel a cmd_fetchall(options)
     # ou options regroupera option_is_from_data, option_release, option_regexp, option_mthreads, option_dry_run
         
     ## Define options
     option_is_from_data = "mc" # mc ou data
     option_release_1 = str(self.lineedit1.text()) # self.cmsenv.getCMSSWBASECMSSWVERSION()
-    option_release_3 = str(self.lineedit3.text()) # self.cmsenv.getCMSSWBASECMSSWVERSION()
     option_regexp = '_RelValTTbar_13' # str( self.lineedit4.text() ) to be removed
     option_mthreads = 3
     option_dry_run = True # False for loading files
@@ -173,17 +161,14 @@ def list_search(self):
     # get collections list to do (Pt35, Pt10, TTbar, .... if checked)
     
     self.rel_list = []
-    self.ref_list = []
     
-    for items in coll_list:
+    for items in self.coll_list:
         print "ITEMS : ", items
         option_regexp = str( items ) + '__'
         if ( self.gccs != 'Full' ):
             option_regexp += ',' + str(self.gccs)
         (liste_fichiers_1) = cmd_fetch(option_is_from_data, option_release_1, option_regexp, option_mthreads, option_dry_run)
         self.rel_list += liste_fichiers_1
-        (liste_fichiers_3) = cmd_fetch(option_is_from_data, option_release_3, option_regexp, option_mthreads, option_dry_run)
-        self.ref_list += liste_fichiers_3
         
     return 
 
