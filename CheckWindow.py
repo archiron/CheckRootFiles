@@ -14,7 +14,7 @@ from fonctions import cmd_fetch, list_search, explode_item
 class CheckWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        self.setWindowTitle('CheckRootFiles publish v0.0.2')
+        self.setWindowTitle('CheckRootFiles publish v0.0.3')
 
         self.cmsenv = env()
         self.texte = self.cmsenv.cmsAll()
@@ -62,8 +62,8 @@ class CheckWindow(QWidget):
         self.QGBox21.setMaximumWidth(450)
         self.QGBox21.setMinimumWidth(450)
         self.QGBox22.setMinimumHeight(200)
-        self.QGBox22.setMaximumWidth(450)
-        self.QGBox22.setMinimumWidth(450)
+        self.QGBox22.setMaximumWidth(1000)
+        self.QGBox22.setMinimumWidth(1000)
         # creation du TextEdit secondaire
         self.texte_eosls = QTextEdit()
         # creation du TextEdit liens
@@ -178,13 +178,18 @@ class CheckWindow(QWidget):
                 print "CMSSW VERSION : ", cmssw_version
                 self.coll_list = []
                 i = 0
+                txt = ''
                 for it_1 in self.cmsenv.liste_type():
                     print "type : %s" % it_1
+                    txt += 'type : ' + it_1 + '\n'
                     for it_2 in self.cmsenv.dictionnaire()[self.cmsenv.liste_tab()[i]]:
                         self.coll_list.append(it_2)
                     list_search(self)
-                    print "self.rel_list : ", self.rel_list
+#                    print "self.rel_list : ", self.rel_list
+                    for it_3 in self.rel_list:
+                        txt += it_3 + '\n'
                     i += 1
+                self.texte_https.setText(self.trUtf8(txt))
             else:
                 BoiteMessage = QMessageBox()
                 BoiteMessage.setText("There is a pbm with the Release.")
