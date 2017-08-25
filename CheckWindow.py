@@ -14,7 +14,7 @@ from fonctions import cmd_fetch, list_search, explode_item
 class CheckWindow(QWidget):
     def __init__(self):
         QWidget.__init__(self)
-        self.setWindowTitle('CheckRootFiles publish v0.0.3')
+        self.setWindowTitle('CheckRootFiles publish v0.0.4') # minor correction with eos.select path & datasets lists in dictionnaire
 
         self.cmsenv = env()
         self.texte = self.cmsenv.cmsAll()

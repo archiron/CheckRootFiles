@@ -33,7 +33,8 @@ class env:
         return cmsAll
 
     def eosText(self):
-        eosText="/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+#        eosText="/afs/cern.ch/project/eos/installation/0.3.84-aquamarine/bin/eos.select"
+        eosText="/afs/cern.ch/project/eos/installation/0.3.15/bin/eos.select"
         eosText+=' ls /eos/cms/store/relval/' 
         return eosText
 
@@ -65,8 +66,10 @@ class env:
         
     def dictionnaire(self):
         dictionnaire = {}
-        dictionnaire["liste_datasets"] = ['RelValSingleElectronPt10_UP15', 'RelValSingleElectronPt1000_UP15', 'RelValSingleElectronPt35_UP15', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
-        dictionnaire["liste_datasets_miniAOD"] = ['RelValSingleElectronPt10_UP15', 'RelValSingleElectronPt1000_UP15', 'RelValSingleElectronPt35_UP15', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
+#        dictionnaire["liste_datasets"] = ['RelValSingleElectronPt10_UP15', 'RelValSingleElectronPt1000_UP15', 'RelValSingleElectronPt35_UP15', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
+#        dictionnaire["liste_datasets_miniAOD"] = ['RelValSingleElectronPt10_UP15', 'RelValSingleElectronPt1000_UP15', 'RelValSingleElectronPt35_UP15', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
+        dictionnaire["liste_datasets"] = ['RelValSingleElectronPt10', 'RelValSingleElectronPt1000', 'RelValSingleElectronPt35', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
+        dictionnaire["liste_datasets_miniAOD"] = ['RelValSingleElectronPt10', 'RelValSingleElectronPt1000', 'RelValSingleElectronPt35', 'RelValQCD_Pt_80_120_13', 'RelValTTbar_13', 'RelValZEE_13']
         dictionnaire["liste_datasets_fast"] = ['RelValTTbar_13', 'RelValZEE_13']
         return dictionnaire
         
